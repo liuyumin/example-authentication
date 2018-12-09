@@ -58,14 +58,16 @@ public class OAuth2ApprovalController {
         final Authentication authentication = authenticationManagerBean.authenticate(authorizaitionServerToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        httpServletResponse.sendRedirect("/oauth/authorize?response_type=code&client_id=authentication-clientId" +
-                "&redirect_uri=http://www.baidu.com&scope=all&username=wangww");
+        String redirectUrl = "/oauth/authorize?response_type=code&client_id=authentication-clientId" +
+                "&redirect_uri=https://www.baidu.com&scope=all";
+
+        redirectStrategy.sendRedirect(request, httpServletResponse, redirectUrl);
     }
 
     @RequestMapping(value = "/oauth/tokens", method= RequestMethod.POST)
     public void postAccessToken(Principal principal,OAuthTokenMode oAuthTokenMode,HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
         logger.info("======================ceshi-/oauth/tokens");
-        String redirectUrl = "/oauth/token?grant_type=authorization_code&code="+oAuthTokenMode.getCode()+"&client_id=authentication-clientId&client_secret=authentication-secret&redirect_uri=http://www.baidu.com&scope=all";
+        String redirectUrl = "/oauth/token?grant_type=authorization_code&code="+oAuthTokenMode.getCode()+"&client_id=authentication-clientId&client_secret=authentication-secret&redirect_uri=https://www.baidu.com&scope=all";
         request.getRequestDispatcher(redirectUrl).forward(request,httpServletResponse);
         //redirectStrategy.sendRedirect(request,httpServletResponse,redirectUrl);
     }

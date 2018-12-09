@@ -31,7 +31,6 @@
         <module>example-authentication-server</module>
         <module>example-authentication-service</module>
         <module>example-authentication-common</module>
-        <module>example-authentication-common</module>
     </modules>
 
 

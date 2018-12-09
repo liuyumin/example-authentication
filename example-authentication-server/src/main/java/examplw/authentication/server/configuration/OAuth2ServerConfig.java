@@ -39,8 +39,9 @@ public class OAuth2ServerConfig {
             oauthServer
                     .realm("oauth2-resources")
                     .tokenKeyAccess("permitAll()")
-                    .checkTokenAccess("permitAll()")
-                    .allowFormAuthenticationForClients();
+                    .checkTokenAccess("permitAll()");
+
+//                    .allowFormAuthenticationForClients();
         }
 
         @Override
@@ -48,7 +49,7 @@ public class OAuth2ServerConfig {
             clients.inMemory()
             .withClient("authentication-clientId")
                     .secret("authentication-secret")
-                    .redirectUris("http://baidu.com")
+                    .redirectUris("https://www.baidu.com")
                     .authorizedGrantTypes("authorization_code", "client_credentials", "refresh_token",
                             "password", "implicit")
                     .scopes("all")

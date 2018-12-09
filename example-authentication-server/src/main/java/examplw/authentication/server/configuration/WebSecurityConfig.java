@@ -1,5 +1,6 @@
 package examplw.authentication.server.configuration;
 
+import examplw.authentication.server.Authorization.AuthorizationServerFilter;
 import examplw.authentication.server.Authorization.AuthorizationServerProvider;
 import examplw.authentication.server.Authorization.AuthorizationServerUserDetails;
 import examplw.authentication.server.Authorization.accessdenied.UnauthorizedEntryPoint;
@@ -16,11 +17,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private AuthorizationServerFilter authorizationServerFilter;
 
     @Autowired
     private UnauthorizedEntryPoint unauthorizedEntryPoint;
@@ -34,6 +40,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UnauthorizedEntryPoint unauthorizedEntryPoint(){
+        return new UnauthorizedEntryPoint("/custom_login.html");
     }
 
     @Bean
@@ -55,22 +66,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.httpBasic().and().authorizeRequests()
-//                .antMatchers("/login","/login.html").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint)
-//                .and().csrf().disable();
-
-        http
-                .requestMatchers().antMatchers("/oauth/**","/login/**","/logout/**")
-                .and()
-                .authorizeRequests()
+        http.httpBasic()
+                .and().authorizeRequests()
+                .antMatchers("/login","/custom_login.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().permitAll();
+                .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint())
+                .and().csrf().disable();
 
-        http.csrf().disable();
+        http.addFilterBefore(authorizationServerFilter, UsernamePasswordAuthenticationFilter.class);
+
+        //第二种方式
+//        http.httpBasic().and()
+//                .requestMatchers().antMatchers("/oauth/**","/login/**","/logout/**")
+//                .and()
+//                .authorizeRequests()
+//                .anyRequest().authenticated()
+//                .and()
+//                .formLogin().permitAll()
+//                .and().exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
+//
+//        http.csrf().disable();
 
     }
 }

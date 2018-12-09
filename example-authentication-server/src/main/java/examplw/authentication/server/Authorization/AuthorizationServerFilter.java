@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,48 +26,52 @@ import java.util.Map;
 
 import static examplw.authentication.server.constants.AuthorizedContants.USER_NAME;
 
+@Component(value = "authorizationServerFilter")
 public class AuthorizationServerFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationServerFilter.class);
 
     @Autowired
     private AuthorizationServerUserDetails authorizationServerUserDetails;
 
-    private boolean allowOnlyPost = false;
+    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
+    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
+
+    private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
+    private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
+    private boolean postOnly = true;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getRequestURI().indexOf("/oauth/user") >= 0){
+            if (postOnly && !request.getMethod().equals("POST")) {
+                throw new AuthenticationServiceException(
+                        "Authentication method not supported: " + request.getMethod());
+            }
+
+            String username = request.getParameter(usernameParameter);
+            String password = request.getParameter(passwordParameter);
+
+            if (username == null) {
+                username = "";
+            }
+
+            if (password == null) {
+                password = "";
+            }
+
+            username = username.trim();
+
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+                    username, password);
+
+            // Allow subclasses to set the "details" property
+            authRequest.setDetails(authorizationServerUserDetails.loadUserByUsername(username));
+
+            SecurityContextHolder.getContext().setAuthentication(authRequest);
+
             filterChain.doFilter(request,response);
             return;
         }else {
-            if (checkAuthorizationModel(request,OAuth2Utils.RESPONSE_TYPE,"code") && checkUserNameIsExisit(request)){
-
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (ObjectUtil.isNotNull(authentication)){
-                    String clientId = "authentication-clientId";
-                    String clientSecret = "authentication-secret";
-
-                    if (clientId == null) {
-                        throw new BadCredentialsException("No client credentials presented");
-                    }
-
-                    if (clientSecret == null) {
-                        clientSecret = "";
-                    }
-
-                    clientId = clientId.trim();
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(clientId,
-                            clientSecret);
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    authenticationToken.setAuthenticated(false);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                }
-
-
-            }else if (checkAuthorizationModel(request,"grant_type","authorization_code")){
-
-            }
-
             filterChain.doFilter(request,response);
         }
     }

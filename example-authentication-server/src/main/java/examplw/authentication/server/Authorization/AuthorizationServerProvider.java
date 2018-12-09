@@ -16,13 +16,11 @@ public class AuthorizationServerProvider implements AuthenticationProvider {
     @Autowired
     private AuthorizationServerUserDetails authorizationServerUserDetails;
 
-    @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UserDetails userDetails = authorizationServerUserDetails.loadUserByUsername(authentication.getName());
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    @Override
     public boolean supports(Class<?> authentication) {
         return true;
     }

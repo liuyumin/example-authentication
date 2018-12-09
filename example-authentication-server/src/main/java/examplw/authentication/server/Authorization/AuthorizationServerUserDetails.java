@@ -14,12 +14,11 @@ import org.springframework.security.oauth2.provider.client.ClientDetailsUserDeta
 import org.springframework.stereotype.Component;
 
 @Component(value = "authorizationServerUserDetails")
-public class AuthorizationServerUserDetails implements UserDetailsService,ClientDetailsService {
+public class AuthorizationServerUserDetails implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 根据用户名查找用户信息
         //根据查找到的用户信息判断用户是否被冻结
@@ -29,8 +28,9 @@ public class AuthorizationServerUserDetails implements UserDetailsService,Client
     }
 
 
-    @Override
-    public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        return null;
-    }
+//    @Override
+//    public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
+//        User user = new User(clientId, "", AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN"));
+//        return user;
+//    }
 }
