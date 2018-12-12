@@ -54,6 +54,7 @@ create table t_oauth_code (
 create table t_oauth_user
 (
    id                   int(11)                        NOT NULL AUTO_INCREMENT COMMENT 'id',
+   open_id              varchar(64)                    DEFAULT NULL COMMENT '系统用户唯一标识',
    user_name            varchar(32)                    DEFAULT NULL COMMENT '姓名',
    user_nickname        varchar(100)                   DEFAULT NULL COMMENT '昵称',
    account              varchar(20)                    DEFAULT NULL COMMENT '登陆账号',

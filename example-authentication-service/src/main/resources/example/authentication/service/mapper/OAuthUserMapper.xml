@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="example.authentication.service.mapper.OAuthUserMapper">
+  <resultMap id="BaseResultMap" type="example.authentication.service.entity.OAuthUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_nickname" jdbcType="VARCHAR" property="userNickname" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="is_freeze" jdbcType="TINYINT" property="isFreeze" />
+    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="flag" jdbcType="TINYINT" property="flag" />
+  </resultMap>
+</mapper>

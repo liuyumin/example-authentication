@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="example.authentication.service.mapper.OAuthCodeMapper">
+  <resultMap id="BaseResultMap" type="example.authentication.service.entity.OAuthCode">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="authentication" jdbcType="LONGVARBINARY" property="authentication" />
+  </resultMap>
+</mapper>
