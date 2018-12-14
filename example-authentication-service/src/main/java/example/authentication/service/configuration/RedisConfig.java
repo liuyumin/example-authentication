@@ -103,8 +103,8 @@ public class RedisConfig {
      * @date 2017年12月21日
      * @throws
      */
-    @Bean(name = "customRedisUtils")
-    public CustomRedisUtils redisUtil(RedisTemplate<String, Object> redisTemplate) {
+    @Bean
+    public CustomRedisUtils customRedisUtils(RedisTemplate<String, Object> redisTemplate) {
         CustomRedisUtils redisUtil = new CustomRedisUtils();
         redisUtil.setRedisTemplate(redisTemplate);
         return redisUtil;

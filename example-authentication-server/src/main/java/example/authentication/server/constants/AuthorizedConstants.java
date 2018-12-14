@@ -12,4 +12,9 @@ public interface AuthorizedConstants {
      */
     String GET_USER_OPEN_ID = "/oauth/getOpenId";
 
+    /***
+     * 处理方式
+     */
+    String CODE_OPERATION_TYPE = "REDIS";
+
 }

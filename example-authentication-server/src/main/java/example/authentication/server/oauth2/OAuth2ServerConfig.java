@@ -1,6 +1,7 @@
 package example.authentication.server.oauth2;
 
 import example.authentication.server.oauth2.server.CustomAuthorizationCodeServices;
+import example.authentication.server.oauth2.server.CustomTokenEnhancer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.approval.DefaultUserApprovalHandler;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 @Configuration
 public class OAuth2ServerConfig {
@@ -22,9 +24,14 @@ public class OAuth2ServerConfig {
         @Autowired
         private PasswordEncoder passwordEncoder;
 
+        @Autowired
+        private CustomAuthorizationCodeServices customAuthorizationCodeServices;//自定义生成授权码
+
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             endpoints.userApprovalHandler(new DefaultUserApprovalHandler());
+            endpoints.authorizationCodeServices(customAuthorizationCodeServices);
+//            endpoints.tokenEnhancer(tokenEnhancer());
         }
 
         @Override
@@ -50,10 +57,10 @@ public class OAuth2ServerConfig {
                     .refreshTokenValiditySeconds(50000);
         }
 
-//        @Bean
-//        public AuthorizationCodeServices authorizationCodeServices(){
-//            return new CustomAuthorizationCodeServices();//自定义生成授权码
-//        }
+        @Bean
+        public TokenEnhancer tokenEnhancer(){
+            return new CustomTokenEnhancer();
+        }
     }
 
 //    @Configuration
